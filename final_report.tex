@@ -1,5 +1,8 @@
 \documentclass{article}
-\usepackage[final]{neurips_2024}
+\usepackage[final,nonatbib]{neurips_2024}
+\makeatletter
+\renewcommand{\@noticestring}{}
+\makeatother
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -397,5 +400,23 @@ Zhou, Z., et~al. (2024).
 \newblock \emph{arXiv preprint}.
 
 \end{thebibliography}
+
+\appendix
+\section{Code}
+
+The full source code, experiment scripts, results, and interactive Streamlit demo are available at:
+
+\begin{center}
+\url{https://github.com/muditbaid0098/cs372-adaptive-planning}
+\end{center}
+
+\noindent The repository includes:
+\begin{itemize}[leftmargin=*]
+    \item \texttt{src/} --- Core system modules: \texttt{planner.py} (orchestrator), \texttt{decomposer.py} (hierarchical decomposition with state-diff prompting), \texttt{classifier.py} (subtask classification), \texttt{executor.py} (strategy selection and execution), \texttt{verifier.py} (deterministic simulation and failure diagnostics), \texttt{failure\_handler.py} (4-tier recovery)
+    \item \texttt{run\_experiments.py}, \texttt{run\_ours\_only.py}, \texttt{run\_baselines\_only.py}, \texttt{run\_ablation\_only.py} --- Experiment runners
+    \item \texttt{analyze\_results.py} --- Statistical analysis and LaTeX table generation
+    \item \texttt{demo.py} --- Interactive Streamlit demo with visual block rendering and step-by-step playback
+    \item \texttt{results/} --- Raw JSON results for main comparison, ablation, and scaling experiments
+\end{itemize}
 
 \end{document}

@@ -13,3 +13,6 @@ results/ours_failed_run.json
 *.snm
 *.toc
 *.synctex.gz
+
+# PDFs (compile from source)
+*.pdf
