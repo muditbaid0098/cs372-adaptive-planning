@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\title{Adaptive Hierarchical Planning with Failure Detection and Strategy Switching}
+\author{Mudit Baid \\ Stanford University \\ \texttt{muditbaid@stanford.edu}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Problem Statement and Motivation}
+
+Large language models struggle with complex, multi-step planning tasks. When a plan fails midway, current systems either restart from scratch or continue down a bad path. They lack the ability to detect failures early and adapt.
+
+This project addresses two gaps. First, LLMs do not decompose problems hierarchically. They generate flat sequences without distinguishing high-level goals from low-level actions. Second, LLMs commit to a single reasoning strategy regardless of subtask type. A math subtask and a commonsense subtask need different approaches, but current systems treat them uniformly.
+
+The goal is to build a planning system that decomposes tasks hierarchically, selects appropriate strategies per subtask, verifies constraints at each step, and recovers from failures through rollback or strategy switching.
+
+\section{Related Work}
+
+HTN planners decompose tasks into subtasks using predefined schemas \citep{erol1994htn}. Recent work applies LLMs to plan generation, but most produce flat action sequences \citep{huang2022language}.
+
+Chain-of-Thought prompting improves reasoning via intermediate steps \citep{wei2022chain}. Tree-of-Thought extends this by exploring multiple paths \citep{yao2023tree}. However, these methods do not adapt strategy based on problem type or recover from dead ends.
+
+Plan verification remains understudied. Some work uses LLMs to check feasibility \citep{valmeekam2023planning}, but integration with rollback is limited. This project combines hierarchical decomposition, adaptive strategy selection, constraint verification, and failure recovery.
+
+\section{Proposed System Design}
+
+The system has five modules:
+
+\textbf{Task Decomposer.} Breaks a complex task into a tree of subgoals. The root is the original task. Children are subtasks that achieve the parent. Leaves are atomic actions.
+
+\textbf{Subtask Classifier.} Labels each subtask by type: arithmetic, logical, commonsense, spatial, or procedural. This determines which reasoning strategy to apply.
+
+\textbf{Strategy Executor.} Runs the appropriate strategy per type: CoT with calculator for arithmetic, ToT for logical, retrieval-augmented prompting for commonsense, state tracking for spatial, precondition checks for procedural.
+
+\textbf{Constraint Verifier.} After each step, checks that output satisfies constraints: logical consistency, resource limits, domain rules. Violations trigger the failure handler.
+
+\textbf{Failure Handler.} When verification fails, decides between: (1) rollback to parent and try alternative decomposition, (2) switch strategy for current subtask, (3) propagate failure upward.
+
+\section{Evaluation Plan}
+
+\textbf{Datasets.} ALFWorld (household tasks), BlocksWorld (classical planning), and a custom benchmark with mixed reasoning types.
+
+\textbf{Baselines.} Flat CoT, Flat ToT, ReAct, and ablations without rollback or strategy switching.
+
+\textbf{Metrics.} Task success rate, steps to completion, rollback frequency and success, strategy switch impact.
+
+\textbf{Analysis.} When does decomposition fail? Which subtask types are hardest? When does rollback help versus hurt?
+
+\section{Timeline and Group}
+
+Weeks 1-2: Decomposer and classifier. Weeks 3-4: Strategy executor. Week 5: Verifier and failure handler. Weeks 6-7: Experiments and ablations. Week 8: Analysis and report.
+
+This project is conducted solo by Mudit Baid.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{9}
+\bibitem[Erol et al., 1994]{erol1994htn}
+Erol, K., Hendler, J., and Nau, D. (1994). HTN planning: Complexity and expressivity. \textit{AAAI}.
+
+\bibitem[Huang et al., 2022]{huang2022language}
+Huang, W., Abbeel, P., Pathak, D., and Mordatch, I. (2022). Language models as zero-shot planners. \textit{ICML}.
+
+\bibitem[Wei et al., 2022]{wei2022chain}
+Wei, J., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models. \textit{NeurIPS}.
+
+\bibitem[Yao et al., 2023]{yao2023tree}
+Yao, S., et al. (2023). Tree of thoughts: Deliberate problem solving with large language models. \textit{NeurIPS}.
+
+\bibitem[Valmeekam et al., 2023]{valmeekam2023planning}
+Valmeekam, K., et al. (2023). On the planning abilities of large language models. \textit{NeurIPS}.
+\end{thebibliography}
+
+\end{document}
